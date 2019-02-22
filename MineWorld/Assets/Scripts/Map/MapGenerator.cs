@@ -6,6 +6,11 @@ public class MapGenerator : MonoBehaviour
 {
     public GameObject CubePrefab;
     public int mapSize = 200;
+    
+    class MapData {
+        int type;
+    };
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,5 +31,13 @@ public class MapGenerator : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void Load() {
+
+    }
+
+    void Save() {
+
     }
 }

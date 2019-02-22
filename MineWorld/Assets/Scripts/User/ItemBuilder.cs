@@ -18,6 +18,8 @@ public class ItemBuilder : MonoBehaviour
         CONTEXT = this;
     }
 
+    public List<Item> itemList;
+
     // Start is called before the first frame update
     void Start()
     {
