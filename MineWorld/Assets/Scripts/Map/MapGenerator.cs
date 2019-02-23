@@ -1,28 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    public GameObject CubePrefab;
+    public static MapGenerator CONTEXT;
     public int mapSize = 200;
-    
-    class MapData {
-        int type;
-    };
+
+    string m_dir = "Data/";
+    string m_file = "save1.mw";
+
+    private void Awake() {
+        CONTEXT = this;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        this.InitMap();
+        bool tryLoad = Load(m_dir + m_file);
+
+        if (!tryLoad)
+            this.InitMap();
     }
 
     void InitMap() {
+        MapDataController.CONTEXT.ResetMap(mapSize);
         for (int i = 0; i < mapSize; i++) {
             for (int j = 0; j < mapSize; j++) {
-                GameObject obj = Instantiate(CubePrefab);
-                obj.transform.SetParent(this.transform, false);
-                obj.transform.localPosition = new Vector3(i, 0, j);
+                ItemBuilder.CONTEXT.PlaceItem(1, new Vector3(i, 0, j));
             }
         }
     }
@@ -30,14 +36,61 @@ public class MapGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.S)) {
+            Save(m_dir, m_file);
+        }
     }
 
-    void Load() {
-
+    public void Load() {
+        Load(m_dir + m_file);
     }
 
-    void Save() {
+    public void Save() {
+        Save(m_dir, m_file);
+    }
 
+    bool Load(string _file) {
+        if (!File.Exists(_file)) {
+            return false;
+        }
+        string mapString = File.ReadAllText(_file);
+
+        int count = 0;
+        int y = 0;
+        MapDataController.CONTEXT.ResetMap(mapSize);
+
+        for (int i = 0; i < mapString.Length; i++) {
+            if (mapString[i] == '\0') {
+                count++;
+                y = 0;
+                continue;
+            }
+            ItemBuilder.CONTEXT.PlaceItem(mapString[i], new Vector3(count / mapSize, y, count % mapSize));
+            y++;
+        }
+
+        return true;
+    }
+
+    void Save(string _dir, string _file) {
+        if (!Directory.Exists(_dir)) {
+            Directory.CreateDirectory(_dir);
+        }
+
+        if (!File.Exists(_dir + _file)) {
+            File.Create(_dir + _file).Dispose();
+        }
+
+        string mapString = "";
+        for (int i = 0; i < mapSize; i++) {
+            for (int j = 0; j < mapSize; j++) {
+                for (MapData data = MapDataController.CONTEXT.MapDataArray[i, j]; data != null; data = data.up) {
+                    char c_id = (char) data.id;
+                    mapString += c_id;
+                }
+                mapString += '\0';
+            }
+        }
+        File.WriteAllText(_dir + _file, mapString);
     }
 }
