@@ -28,7 +28,7 @@ public class MapGenerator : MonoBehaviour
         MapDataController.CONTEXT.ResetMap(mapSize);
         for (int i = 0; i < mapSize; i++) {
             for (int j = 0; j < mapSize; j++) {
-                ItemBuilder.CONTEXT.PlaceItem(1, new Vector3(i, 0, j));
+                ItemBuilderOld.CONTEXT.PlaceItem(1, new Vector3(i, 0, j));
             }
         }
     }
@@ -65,7 +65,7 @@ public class MapGenerator : MonoBehaviour
                 y = 0;
                 continue;
             }
-            ItemBuilder.CONTEXT.PlaceItem(mapString[i], new Vector3(count / mapSize, y, count % mapSize));
+            ItemBuilderOld.CONTEXT.PlaceItem(mapString[i], new Vector3(count / mapSize, y, count % mapSize));
             y++;
         }
 

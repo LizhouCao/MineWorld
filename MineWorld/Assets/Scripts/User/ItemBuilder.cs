@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,119 +7,71 @@ public class ItemBuilder : MonoBehaviour
 {
     enum ItemBuilder_State {
         IDLE = 0,
-        HOLD = 1,
-        DESTROY = 2
-    };
-    ItemBuilder_State m_state = ItemBuilder_State.IDLE;
-    Item m_item = null;
-    GameObject m_itemPreparing = null;
-
-    public static ItemBuilder CONTEXT;
-    public List<Item> itemList;
-    private Dictionary<int, Item> itemDictionary;
-
-    private void Awake() {
-        CONTEXT = this;
-        itemDictionary = new Dictionary<int, Item>();
-        foreach (Item item in itemList) {
-            itemDictionary.Add(item.id, item);
-        }
+        BUILDING = 1
     }
+
+    ItemBuilder_State m_state = ItemBuilder_State.IDLE;
+    public GameObject checkPlane_prefab;
+
+    GameObject[,] m_checkPlane_array;
+    Vector2Int m_size;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        StartBuilding();
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void LateUpdate() {
-        if (m_state == ItemBuilder_State.HOLD) {
+    void Update() {
+        if (m_state == ItemBuilder_State.BUILDING) {
             if (Input.GetMouseButtonDown(1)) {
-                UnSelect();
+                ExitBuilding();
             }
             else {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, 1000.0f, 1 << 9)) {
-                    if (MapDataController.CONTEXT.CheckAddItem(m_item, Vector3Int.RoundToInt(hit.transform.position))) {
-                        m_itemPreparing.SetActive(true);
-
-                        Vector3 position = hit.transform.position + new Vector3(0.0f, 1.0f, 0.0f);
-                        m_itemPreparing.transform.position = position;
-
-                        if (Input.GetMouseButtonDown(0)) {
-                            PlaceItem(m_item, position);
-                        }
-                    }
-                    else {
-                        m_itemPreparing.SetActive(false);
-                    }
-                }
-            }
-        }
-        else if (m_state == ItemBuilder_State.DESTROY) {
-            if (Input.GetMouseButtonDown(1)) {
-                ExitDestroyMode();
-            }
-            else {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, 1000.0f, 1 << 9)) {
-                   
-                    if (Input.GetMouseButtonDown(0)) {
-                        DestroyItem(hit.transform.gameObject, hit.transform.position);
-                    }
+                if (Physics.Raycast(ray, out hit, 1000.0f, 1 << 10)) {
+                    CheckPlaneUpdate(HitToMap(hit.point));
                 }
             }
         }
     }
 
-    public void SelectItem(Item _item) {
-        m_state = ItemBuilder_State.HOLD;
-        m_item = _item;
-        m_itemPreparing = Instantiate(_item.prepareModel);
-        m_itemPreparing.SetActive(false);
+    
+
+
+
+    void StartBuilding() {
+        m_state = ItemBuilder_State.BUILDING;
+
+        m_size = new Vector2Int(3, 3);
+
+        m_checkPlane_array = new GameObject[m_size.x, m_size.y];
+        for (int i = 0; i < m_size.x; i++) {
+            for (int j = 0; j < m_size.y; j++) {
+                m_checkPlane_array[i, j] = Instantiate(checkPlane_prefab);
+            }
+        }
     }
 
-    public void PlaceItem(int _id, Vector3 _position) {
-        Item item = GetItemByID(_id);
-        if (item != null)
-            PlaceItem(item, _position);
+    void ExitBuilding() {
+
     }
 
-    public void DestroyItem(GameObject _obj, Vector3 _position) {
-        bool flag = MapDataController.CONTEXT.DeleteItem(Vector3Int.RoundToInt(_position));
-        if (flag)
-            Destroy(_obj);
+    Vector2Int HitToMap(Vector3 _point) {
+        float t = 0.4f;
+        int x = (int) Mathf.Round(_point.x - (m_size.x - 1) / 2.0f);
+        int y = (int) Mathf.Round(_point.z - (m_size.y - 1) / 2.0f);
+        return new Vector2Int(x, y);
     }
 
-    public void DestroyMode() {
-        m_state = ItemBuilder_State.DESTROY;
-    }
+    void CheckPlaneUpdate(Vector2Int _point) {
 
-    void PlaceItem(Item _item, Vector3 _position) {
-        GameObject model = Instantiate(_item.model);
-        model.transform.SetParent(this.transform.Find("MapItems"), false);
-        model.transform.localPosition = _position;
-        MapDataController.CONTEXT.AddItem(_item.id, Vector3Int.RoundToInt(_position));
-    }
-
-    void UnSelect() {
-        m_state = ItemBuilder_State.IDLE;
-        Destroy(m_itemPreparing);
-    }
-
-    void ExitDestroyMode() {
-        m_state = ItemBuilder_State.IDLE;
-    }
-
-    public Item GetItemByID(int _id) {
-        return itemDictionary[_id];
+        for (int i = 0; i < m_size.x; i++) {
+            for (int j = 0; j < m_size.y; j++) {
+                m_checkPlane_array[i, j].transform.position = new Vector3(_point.x + i, 0.0f, _point.y + j);
+            }
+        }
     }
 }

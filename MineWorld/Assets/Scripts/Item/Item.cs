@@ -24,6 +24,6 @@ public class Item : MonoBehaviour
     }
 
     public void SelectItem() {
-        ItemBuilder.CONTEXT.SelectItem(this);
+        ItemBuilderOld.CONTEXT.SelectItem(this);
     }
 }
