@@ -5,7 +5,14 @@ using UnityEngine;
 public class MapDataController : MonoBehaviour
 {
     public static MapDataController CONTEXT;
-    int m_mapSize = 200;
+    int m_mapSize = 500;
+
+    /*
+     * 0 ground
+     * 1 building
+     * 2 road
+     */
+    int[,] m_mapTypeArray;
 
     MapData[,] m_mapDataArray;
     public MapData[,] MapDataArray {
@@ -20,7 +27,7 @@ public class MapDataController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        ResetMap(500);
     }
 
     // Update is called once per frame
@@ -30,72 +37,27 @@ public class MapDataController : MonoBehaviour
     }
 
     public void ResetMap(int _size) {
-        m_mapDataArray = new MapData[_size, _size];
-        GameObject obj = this.transform.Find("MapItems").gameObject;
-        obj.name = "destroy";
-        Destroy(obj);
-        GameObject emptyObj = new GameObject("MapItems");
-        emptyObj.transform.SetParent(this.transform, false);
+        m_mapTypeArray = new int[_size, _size];
     }
 
+    public int CheckMapType(Vector2Int _point) {    
+        return CheckMapType(_point.x, _point.y);
+    }
 
+    public int CheckMapType(int _x, int _y) {
+        return m_mapTypeArray[_x, _y];
+    }
 
-    public bool CheckAddItem(Item _item, Vector3Int _position) {
-        int x = _position.x;
-        int y = _position.y;
-        int z = _position.z;
-
-        int high = -1;
-        for (MapData data = m_mapDataArray[x, z]; data != null; data = data.up)
-            high++;
-        if (y < high)
-            return false;
-
+    public bool BuildItem(Vector2Int _point, int _id, Vector2Int _size) {
+        for (int i = 0; i < _size.x; i++) {
+            for (int j = 0; j < _size.y; j++) {
+                m_mapTypeArray[_point.x + i, _point.y + j] = 1;
+            }
+        }
         return true;
     }
 
-    public void AddItem(int _id, Vector3Int _position) {
-        int x = _position.x;
-        int y = _position.y;
-        int z = _position.z;
-
-        MapData data = new MapData();
-        data.id = _id;
-
-        if (m_mapDataArray[x, z] == null)
-            m_mapDataArray[x, z] = data;
-        else {
-            for (MapData d = m_mapDataArray[x, z]; ; d = d.up) {
-                if (d.up == null) {
-                    d.up = data;
-                    data.down = d;
-                    break;
-                }
-            }
-        }
-    }
-
     public bool DeleteItem(Vector3Int _position) {
-        MapData data = m_mapDataArray[_position.x, _position.z];
-        for (int i = 0; ; i++) {
-            if (data == null) {
-                return false;
-            }
-            if (i == _position.y) {
-                if (data.up == null) {
-                    if (data.down != null) {
-                        data.down.up = null;
-                    }
-                    else
-                        m_mapDataArray[_position.x, _position.z] = null;
-                    
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-            data = data.up;
-        } 
+        return true;
     }
 }
