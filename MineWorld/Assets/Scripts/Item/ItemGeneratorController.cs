@@ -24,8 +24,10 @@ public class ItemGeneratorController : MonoBehaviour
     }
 
     public void EnableGenerator(ItemGenerator _generator) {
-        if (m_itemGenerator != null)
+        if (m_itemGenerator != null) {
+            m_itemGenerator.ExitBuilding();
             Destroy(m_itemGenerator.gameObject);
+        }
 
         m_itemGenerator = Instantiate(_generator);
         m_itemGenerator.StartGenerating();

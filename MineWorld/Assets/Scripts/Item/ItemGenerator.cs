@@ -2,16 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ItemGenerator : MonoBehaviour
 {
-    enum ItemBuilder_State {
-        IDLE = 0,
-        BUILDING = 1,
-        BUILDING_HOLD = 2
-    }
-
-    ItemBuilder_State m_state = ItemBuilder_State.IDLE;
+    protected bool m_isWorking = false;
 
     public Item item_prefab;
     public ItemPre itemPre_prefab;
@@ -26,21 +21,21 @@ public class ItemGenerator : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        if (m_state >= ItemBuilder_State.BUILDING) {
+        if (m_isWorking == true) {
             if (Input.GetMouseButtonDown(1)) {
                 ExitBuilding();
             }
             else {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, 1000.0f, 1 << 10)) {
+                if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out hit, 1000.0f, 1 << 11)) {
 
-                    Vector2Int itemPosition = HitToMap(hit.point);                   
+                    Vector3Int itemPosition = HitToMap(hit.point);                   
                     bool avaliable = CheckPlaneUpdate(itemPosition);
 
                     if (avaliable) {
                         if (Input.GetMouseButtonDown(0)) {
-                            // Build(itemPosition);
+                            Generate(itemPosition);
                         }                                 
                     }
                 }
@@ -49,40 +44,45 @@ public class ItemGenerator : MonoBehaviour
     }
 
     
-    void Generate(Vector2Int _itemPosition) {
+    protected virtual void Generate(Vector3Int _itemPosition) {
+        // MapDataController.CONTEXT.BuildItem(_itemPosition, item_prefab.id, item_prefab.size);
         Item item = Instantiate(item_prefab);
-        item.transform.position = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, 0.0f, _itemPosition.y + (item_prefab.size.y - 1) / 2.0f);
+        item.transform.position = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
     }
 
 
-    public void StartGenerating() {
-        if (m_state == ItemBuilder_State.BUILDING) {
+    public virtual void StartGenerating() {
+        if (m_isWorking == true) {
             ExitBuilding();
         }
-        m_state = ItemBuilder_State.BUILDING;
+        m_isWorking = true;
+        m_itemPre = Instantiate(itemPre_prefab);
     }
 
-    void ExitBuilding() {
-        Destroy(m_itemPre.gameObject);
+    public virtual void ExitBuilding() {
+        if (m_itemPre != null)
+            Destroy(m_itemPre.gameObject);
 
         //foreach (MapCheckPlane plane in m_checkPlane_array)
-          //  Destroy(plane.gameObject);
+        //  Destroy(plane.gameObject);
 
-        m_state = ItemBuilder_State.IDLE;
+        m_isWorking = false;
     }
 
-    Vector2Int HitToMap(Vector3 _point) {
+    protected Vector3Int HitToMap(Vector3 _point) {
         int x = (int) Mathf.Round(_point.x - (item_prefab.size.x - 1) / 2.0f);
-        int y = (int) Mathf.Round(_point.z - (item_prefab.size.y - 1) / 2.0f);
-        return new Vector2Int(x, y);
+        int y = (int)Mathf.Round(_point.y);
+        int z = (int) Mathf.Round(_point.z - (item_prefab.size.y - 1) / 2.0f);
+
+        return new Vector3Int(x, y, z);
     }
 
-    bool CheckPlaneUpdate(Vector2Int _itemPosition) {
-        bool avaliableFlag = item_prefab.CheckMapAvaliable(_itemPosition);
+    protected virtual bool CheckPlaneUpdate(Vector3Int _itemPosition) {
+        bool avaliableFlag = true;// item_prefab.CheckMapAvaliable(_itemPosition);
 
         m_itemPre.SetState(avaliableFlag);
 
-        m_itemPre.transform.position = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, 0.0f, _itemPosition.y + (item_prefab.size.y - 1) / 2.0f);
+        m_itemPre.transform.position = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
 
         return avaliableFlag;
     }

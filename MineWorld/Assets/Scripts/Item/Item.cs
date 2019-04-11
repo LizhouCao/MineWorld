@@ -5,7 +5,7 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     public int id;
-    public Vector2Int size;
+    public Vector3Int size;
 
     
 
@@ -21,7 +21,7 @@ public class Item : MonoBehaviour
         
     }
 
-    public virtual bool CheckMapAvaliable(Vector2Int _position) {
+    public virtual bool CheckMapAvaliable(Vector3Int _position) {
         for (int i = 0; i < size.x; i++) {
             for (int j = 0; j < size.y; j++) {
                 if (MapDataController.CONTEXT.CheckMapType(_position.x + i, _position.y + j) != 0)
@@ -31,13 +31,13 @@ public class Item : MonoBehaviour
         return true;
     }
 
-    public virtual bool CheckAndBuild(Vector2Int _position) {
+    public virtual bool CheckAndBuild(Vector3Int _position) {
         bool check = CheckMapAvaliable(_position);
         return check;
     }
 
-    public virtual void Build(Vector2Int _position) {
-        MapDataController.CONTEXT.BuildItem(_position, id, size);
+    public virtual void Build(Vector3Int _position) {
+        // MapDataController.CONTEXT.BuildItem(_position, id, size);
         Item item = Instantiate(this);
         item.transform.position = new Vector3(_position.x + (size.x - 1) / 2.0f, 0.0f, _position.y + (size.y - 1) / 2.0f);
     }
