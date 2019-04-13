@@ -22,12 +22,12 @@ public class Item : MonoBehaviour
     }
 
     public virtual bool CheckMapAvaliable(Vector3Int _position) {
-        for (int i = 0; i < size.x; i++) {
+        /*for (int i = 0; i < size.x; i++) {
             for (int j = 0; j < size.y; j++) {
                 if (MapDataController.CONTEXT.CheckMapType(_position.x + i, _position.y + j) != 0)
                     return false;
             }
-        }
+        }*/
         return true;
     }
 

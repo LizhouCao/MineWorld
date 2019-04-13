@@ -30,7 +30,8 @@ public class ItemGenerator : MonoBehaviour
                 RaycastHit hit;
                 if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out hit, 1000.0f, 1 << 11)) {
 
-                    Vector3Int itemPosition = HitToMap(hit.point);                   
+                    Vector3 localVector = GLobalToLocal(hit.point);
+                    Vector3Int itemPosition = HitToMap(localVector);                   
                     bool avaliable = CheckPlaneUpdate(itemPosition);
 
                     if (avaliable) {
@@ -43,11 +44,17 @@ public class ItemGenerator : MonoBehaviour
         }
     }
 
+    protected Vector3 GLobalToLocal(Vector3 _vector) {
+        return SceneController.CONTEXT.City.transform.InverseTransformPoint(_vector);
+    }
+
     
     protected virtual void Generate(Vector3Int _itemPosition) {
         // MapDataController.CONTEXT.BuildItem(_itemPosition, item_prefab.id, item_prefab.size);
         Item item = Instantiate(item_prefab);
-        item.transform.position = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
+        item.transform.SetParent(SceneController.CONTEXT.city.transform);
+        item.transform.localPosition = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
+        item.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
     }
 
 
@@ -57,6 +64,8 @@ public class ItemGenerator : MonoBehaviour
         }
         m_isWorking = true;
         m_itemPre = Instantiate(itemPre_prefab);
+        m_itemPre.transform.SetParent(SceneController.CONTEXT.city.transform, false);
+        m_itemPre.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
     }
 
     public virtual void ExitBuilding() {
@@ -82,7 +91,8 @@ public class ItemGenerator : MonoBehaviour
 
         m_itemPre.SetState(avaliableFlag);
 
-        m_itemPre.transform.position = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
+        m_itemPre.transform.localPosition = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
+        m_itemPre.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
         return avaliableFlag;
     }

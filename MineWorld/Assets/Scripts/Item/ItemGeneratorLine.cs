@@ -32,7 +32,8 @@ public class ItemGeneratorLine : ItemGenerator
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, 1000.0f, 1 << 11)) {
 
-                    Vector3Int itemPosition = HitToMap(hit.point);
+                    Vector3 localVector = this.GLobalToLocal(hit.point);
+                    Vector3Int itemPosition = HitToMap(localVector);
 
                     if (m_is_startPoint_down == true)
                         itemPosition = VectorLimit(itemPosition);
@@ -87,8 +88,6 @@ public class ItemGeneratorLine : ItemGenerator
 
                 VectorStandardize(ref v1, ref v2);
 
-                print(v1.x + " " + v2.x + " " + v1.z + " " + v2.z);
-
                 int count = 0;
                 for (int i = v1.x; i <= v2.x; i++) {
                     for (int j = v1.z; j <= v2.z; j++) {
@@ -113,6 +112,7 @@ public class ItemGeneratorLine : ItemGenerator
 
         for (int i = 0; i < m_limit; i++) {
             m_itemPreArray[i] = Instantiate(itemPre_prefab);
+            m_itemPreArray[i].transform.SetParent(SceneController.CONTEXT.city.transform);
             m_itemPreArray[i].gameObject.SetActive(false);
         }
 
@@ -178,7 +178,8 @@ public class ItemGeneratorLine : ItemGenerator
 
         _item.SetState(avaliableFlag);
 
-        _item.transform.position = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
+        _item.transform.localPosition = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
+        _item.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
         return avaliableFlag;
     }
