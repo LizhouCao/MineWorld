@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SelfRotation : MonoBehaviour
+public class SceneController : MonoBehaviour
 {
+    public static SceneController CONTEXT;
     // Start is called before the first frame update
     void Start()
     {
