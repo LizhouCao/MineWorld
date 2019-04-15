@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    float m_scaleMin = 1.0f;
+    float m_scaleMax = 20.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,10 +34,10 @@ public class CameraController : MonoBehaviour
         }
 
         this.transform.localScale *= 1.0f - 0.1f * Input.mouseScrollDelta.y;
-        if (this.transform.localScale.x < 1.0f)
-            this.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-        else if (this.transform.localScale.x > 10.0f)
-            this.transform.localScale = new Vector3(10.0f, 10.0f, 10.0f);
+        if (this.transform.localScale.x < m_scaleMin)
+            this.transform.localScale = m_scaleMin * Vector3.one;
+        else if (this.transform.localScale.x > m_scaleMax)
+            this.transform.localScale = m_scaleMax * Vector3.one;
 
     }
 }
