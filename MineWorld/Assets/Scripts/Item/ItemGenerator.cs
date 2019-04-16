@@ -9,9 +9,10 @@ public class ItemGenerator : MonoBehaviour
     protected bool m_isWorking = false;
 
     public Item item_prefab;
-    public ItemPre itemPre_prefab;
 
     private ItemPre m_itemPre;
+
+    protected int m_rotation_offset = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +42,15 @@ public class ItemGenerator : MonoBehaviour
                     }
                 }
             }
+
+            if (Input.GetKeyDown(KeyCode.E)) {
+                m_rotation_offset = (m_rotation_offset + 1) % 4;
+                m_itemPre.SetRotation(m_rotation_offset);
+            }
+            else if (Input.GetKeyDown(KeyCode.Q)) {
+                m_rotation_offset = (m_rotation_offset - 1 + 4) % 4;
+                m_itemPre.SetRotation(m_rotation_offset);
+            }
         }
     }
 
@@ -51,10 +61,8 @@ public class ItemGenerator : MonoBehaviour
     
     protected virtual void Generate(Vector3Int _itemPosition) {
         // MapDataController.CONTEXT.BuildItem(_itemPosition, item_prefab.id, item_prefab.size);
-        Item item = Instantiate(item_prefab);
-        item.transform.SetParent(SceneController.CONTEXT.city.transform);
-        item.transform.localPosition = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
-        item.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        // item_prefab.Build(SceneController.CONTEXT.city.LevelPlane(1), _itemPosition, m_rotation_offset);
+        SceneController.CONTEXT.city.Generate(item_prefab, _itemPosition, m_rotation_offset);
     }
 
 
@@ -63,7 +71,7 @@ public class ItemGenerator : MonoBehaviour
             ExitBuilding();
         }
         m_isWorking = true;
-        m_itemPre = Instantiate(itemPre_prefab);
+        m_itemPre = Instantiate(item_prefab.itemPre_prefab);
         m_itemPre.transform.SetParent(SceneController.CONTEXT.city.transform, false);
         m_itemPre.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
     }
@@ -79,20 +87,20 @@ public class ItemGenerator : MonoBehaviour
     }
 
     protected Vector3Int HitToMap(Vector3 _point) {
-        int x = (int) Mathf.Round(_point.x - (item_prefab.size.x - 1) / 2.0f);
+        int x = (int) Mathf.Round(_point.x + 0.5f);
         int y = (int)Mathf.Round(_point.y);
-        int z = (int) Mathf.Round(_point.z - (item_prefab.size.y - 1) / 2.0f);
+        int z = (int) Mathf.Round(_point.z + 0.5f);
 
         return new Vector3Int(x, y, z);
     }
 
     protected virtual bool CheckPlaneUpdate(Vector3Int _itemPosition) {
-        bool avaliableFlag = true;// item_prefab.CheckMapAvaliable(_itemPosition);
+        bool avaliableFlag = item_prefab.CheckMapAvaliable(_itemPosition, m_rotation_offset);
 
         m_itemPre.SetState(avaliableFlag);
 
-        m_itemPre.transform.localPosition = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
-        m_itemPre.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        m_itemPre.transform.localPosition = new Vector3(_itemPosition.x - 0.5f, _itemPosition.y, _itemPosition.z - 0.5f);
+        // m_itemPre.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
         return avaliableFlag;
     }

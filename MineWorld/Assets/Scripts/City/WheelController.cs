@@ -21,6 +21,8 @@ public class WheelController : MonoBehaviour
     Transform m_model;
     WheelCollider m_wheel;
 
+    public ParticleSystem particle;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -83,5 +85,8 @@ public class WheelController : MonoBehaviour
         if (Input.GetKey(KeyCode.Space)) {
             m_wheel.brakeTorque = 2.0f * m_brake;
         }
+
+        if (particle != null)
+            particle.Emit((int)(SceneController.CONTEXT.city.GetComponent<Rigidbody>().velocity.magnitude * 1));
     }
 }

@@ -22,6 +22,6 @@ public class ItemButton : MonoBehaviour
     }
 
     public void SelectItem() {
-        ItemGeneratorController.CONTEXT.EnableGenerator(itemGenerator);
+        SceneController.CONTEXT.ItemGeneratorCtrl.EnableGenerator(itemGenerator);
     }
 }

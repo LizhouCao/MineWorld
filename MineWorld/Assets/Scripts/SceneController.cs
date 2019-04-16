@@ -12,8 +12,15 @@ public class SceneController : MonoBehaviour
     }
     public CityController city;
 
+    public ItemGeneratorController ItemGeneratorCtrl {
+        get { return m_itemGeneratorCtrl; }
+    }
+
+    private ItemGeneratorController m_itemGeneratorCtrl;
+
     private void Awake() {
         CONTEXT = this;
+        m_itemGeneratorCtrl = this.GetComponentInChildren<ItemGeneratorController>();
     }
 
     // Start is called before the first frame update

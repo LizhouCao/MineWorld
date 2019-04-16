@@ -4,12 +4,26 @@ using UnityEngine;
 
 public class ItemGeneratorController : MonoBehaviour
 {
-    public static ItemGeneratorController CONTEXT;
     ItemGenerator m_itemGenerator;
 
+    public List<Item> item_prefabs;
+    private Dictionary<int, Item> m_itemDictionary;
+
     private void Awake() {
-        CONTEXT = this;
+        m_itemDictionary = new Dictionary<int, Item>();
+        foreach (Item item in item_prefabs) {
+            m_itemDictionary.Add(item.id, item);
+        }
     }
+
+    /*public enum State {
+        IDLE = 0,
+        GENERATING = 1,
+        DESTROY = 2
+    }
+
+    State m_state = State.IDLE;
+    */
 
     // Start is called before the first frame update
     void Start()
@@ -20,8 +34,12 @@ public class ItemGeneratorController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
+
+    public Item GetItemPrefabById(int _id) {
+        return m_itemDictionary[_id];
+    }
+
 
     public void EnableGenerator(ItemGenerator _generator) {
         if (m_itemGenerator != null) {

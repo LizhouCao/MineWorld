@@ -111,7 +111,7 @@ public class ItemGeneratorLine : ItemGenerator
         m_itemPreArray = new ItemPre[m_limit];
 
         for (int i = 0; i < m_limit; i++) {
-            m_itemPreArray[i] = Instantiate(itemPre_prefab);
+            m_itemPreArray[i] = Instantiate(item_prefab.itemPre_prefab);
             m_itemPreArray[i].transform.SetParent(SceneController.CONTEXT.city.transform);
             m_itemPreArray[i].gameObject.SetActive(false);
         }
@@ -163,7 +163,7 @@ public class ItemGeneratorLine : ItemGenerator
 
         for (int i = v1.x; i <= v2.x; i++) {
             for (int j = v1.z; j <= v2.z; j++) {
-                if (item_prefab.CheckMapAvaliable(new Vector3Int(i, v1.y, j)))
+                if (item_prefab.CheckMapAvaliable(new Vector3Int(i, v1.y, j), m_rotation_offset)) ;
                     base.Generate(new Vector3Int(i, v1.y, j));
             }
         }
@@ -174,11 +174,11 @@ public class ItemGeneratorLine : ItemGenerator
     }
 
     bool CheckPlaneUpdate(ItemPre _item, Vector3Int _itemPosition) {
-        bool avaliableFlag = item_prefab.CheckMapAvaliable(_itemPosition);
+        bool avaliableFlag = item_prefab.CheckMapAvaliable(_itemPosition, m_rotation_offset);
 
         _item.SetState(avaliableFlag);
 
-        _item.transform.localPosition = new Vector3(_itemPosition.x + (item_prefab.size.x - 1) / 2.0f, _itemPosition.y, _itemPosition.z + (item_prefab.size.z - 1) / 2.0f);
+        _item.transform.localPosition = new Vector3(_itemPosition.x - 0.5f, _itemPosition.y, _itemPosition.z - 0.5f);
         _item.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
         return avaliableFlag;

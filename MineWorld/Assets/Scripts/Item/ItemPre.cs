@@ -20,4 +20,8 @@ public class ItemPre : MonoBehaviour
         this.transform.Find("true").gameObject.SetActive(_state);
         this.transform.Find("false").gameObject.SetActive(!_state);
     }
+
+    public void SetRotation(int _num) {
+        this.transform.localRotation = Quaternion.Euler(0.0f, 90.0f * _num, 0.0f);
+    }
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    float m_scaleMin = 1.0f;
+    float m_scaleMin = 0.5f;
     float m_scaleMax = 20.0f;
+
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -21,16 +21,11 @@ public class CameraController : MonoBehaviour
     private void FixedUpdate() {
         if (Input.GetMouseButton(1)) {
             float distanceX = -Input.GetAxis("Mouse X");
-            float disntaceY = -Input.GetAxis("Mouse Y");
 
-            this.transform.Rotate(new Vector3(0.0f, 3.0f * distanceX, 0.0f));
-        }
-
-        if (Input.GetMouseButton(2)) {
-            float distanceX = -Input.GetAxis("Mouse X");
             float distanceY = -Input.GetAxis("Mouse Y");
 
-            this.transform.Translate(new Vector3(distanceX, 0.0f, distanceY));
+            this.transform.Rotate(new Vector3(distanceY, 0.0f, 0.0f), Space.Self);
+            this.transform.Rotate(new Vector3(0.0f, distanceX, 0.0f), Space.World);
         }
 
         this.transform.localScale *= 1.0f - 0.1f * Input.mouseScrollDelta.y;
@@ -39,5 +34,12 @@ public class CameraController : MonoBehaviour
         else if (this.transform.localScale.x > m_scaleMax)
             this.transform.localScale = m_scaleMax * Vector3.one;
 
+        if (Input.GetMouseButton(2)) {
+            float distanceX = -Input.GetAxis("Mouse X");
+            float distanceY = -Input.GetAxis("Mouse Y");
+
+            this.transform.Translate(new Vector3(distanceX, 0.0f, distanceY * this.transform.localScale.x));
+        }
+        
     }
 }
