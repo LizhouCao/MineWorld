@@ -6,6 +6,8 @@ public class ItemGeneratorController : MonoBehaviour
 {
     ItemGenerator m_itemGenerator;
 
+    public GameObject menu;
+
     public List<Item> item_prefabs;
     private Dictionary<int, Item> m_itemDictionary;
 
@@ -40,6 +42,11 @@ public class ItemGeneratorController : MonoBehaviour
         return m_itemDictionary[_id];
     }
 
+    public void SetMenuActive(bool _isOn) {
+        if (menu != null) {
+            menu.SetActive(_isOn);
+        }
+    }
 
     public void EnableGenerator(ItemGenerator _generator) {
         if (m_itemGenerator != null) {

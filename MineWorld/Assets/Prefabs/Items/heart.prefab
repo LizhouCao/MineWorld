@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemPre_prefab: {fileID: 7465243957895373489, guid: 05cd72365151a5645a52f68ea14211f8,
     type: 3}
-  id: 100
+  id: 1
   size: {x: 4, y: 4, z: 4}
 --- !u!1 &1375536948476642269
 GameObject:

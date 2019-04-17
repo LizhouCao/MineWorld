@@ -86,7 +86,19 @@ public class WheelController : MonoBehaviour
             m_wheel.brakeTorque = 2.0f * m_brake;
         }
 
-        if (particle != null)
-            particle.Emit((int)(SceneController.CONTEXT.city.GetComponent<Rigidbody>().velocity.magnitude * 1));
+        if (particle != null) {
+            Vector3 velocity = SceneController.CONTEXT.city.GetComponent<Rigidbody>().velocity;
+            // velocity = this.transform.InverseTransformPoint(velocity);
+
+            // print(velocity);
+            float z = Vector3.Dot(velocity, this.transform.forward) / this.transform.forward.magnitude;
+
+            if (z != 0.0f) {
+                float sign = z / Mathf.Abs(z);
+
+                particle.transform.localRotation = Quaternion.Euler(-90.0f - sign * 30.0f, 0.0f, 0.0f);
+                particle.Emit((int)(Mathf.Abs(z) * 0.25f));
+            }
+        }
     }
 }

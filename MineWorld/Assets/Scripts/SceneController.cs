@@ -17,6 +17,8 @@ public class SceneController : MonoBehaviour
     }
 
     private ItemGeneratorController m_itemGeneratorCtrl;
+    private int[] m_timeScale = { 0, 1, 2, 4, 8};
+    private int num = 1;
 
     private void Awake() {
         CONTEXT = this;
@@ -32,6 +34,9 @@ public class SceneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.H)) {
+            num = (num + 1) % 5;
+            Time.timeScale = m_timeScale[num];
+        }
     }
 }

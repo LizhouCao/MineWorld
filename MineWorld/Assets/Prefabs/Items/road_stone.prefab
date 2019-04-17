@@ -55,7 +55,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemPre_prefab: {fileID: 1102313081063135736, guid: 101a170e30a76de4b8cd94bd8b038e25,
     type: 3}
-  id: 10
+  id: 11
   size: {x: 1, y: 1, z: 1}
 --- !u!1 &4964878299710674450
 GameObject:
@@ -115,7 +115,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a2706b3e1bf2f4242a099b16533d5d5c, type: 2}
+  - {fileID: 2100000, guid: f2aff270997c6d74388571aa558f5ae4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

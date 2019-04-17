@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    float m_scaleMin = 0.5f;
+    float m_scaleMin = 0.2f;
     float m_scaleMax = 20.0f;
 
     // Start is called before the first frame update
