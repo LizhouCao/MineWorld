@@ -23,7 +23,7 @@ public class CityData
 
     
     public List<ItemGenerateInstruction> itemGenerateInstructions = new List<ItemGenerateInstruction>();
-    public Vector3Int citySize = new Vector3Int(20, 1, 30);
+    public Vector3Int citySize = new Vector3Int(20, 10, 30);
 
     [XmlIgnore]
     private ItemGenerateInstruction[,,] m_instructions;
@@ -55,7 +55,7 @@ public class CityData
 
         for (int i = pos1.x; i <= pos2.x; i++) {
             for (int j = pos1.z; j <= pos2.z; j++) {
-                m_instructions[i, 1, j] = _instruction;
+                m_instructions[i, pos1.y / 2, j] = _instruction;
             }
         }
     }
@@ -75,8 +75,7 @@ public class CityData
     }
 
     public void GetStartAndEnd(Vector3Int _position, int _rotation, Vector3Int _size, ref Vector3Int _pos1, ref Vector3Int _pos2) {
-        Vector3Int pos = _position + new Vector3Int(citySize.x / 2, 0, citySize.z / 2);
-
+        Vector3Int pos = GetOffsetPosition(_position);
         
         _pos1 = new Vector3Int(-(_size.x - 1) / 2, 0, -(_size.z - 1) / 2);
         _pos2 = new Vector3Int(_size.x / 2, 0, _size.z / 2);
@@ -104,8 +103,9 @@ public class CityData
         return _position + new Vector3Int(citySize.x / 2, 0, citySize.z / 2);
     }
 
+    // offset position
     public ItemGenerateInstruction GetInstructionByPosition(Vector3Int _position) {
-        return m_instructions[_position.x, 1, _position.z];
+        return m_instructions[_position.x, _position.y / 2, _position.z];
     }
 
     public void RemoveInstruction(ItemGenerateInstruction _instruction) {
@@ -117,7 +117,7 @@ public class CityData
 
         for (int i = pos1.x; i <= pos2.x; i++) {
             for (int j = pos1.z; j <= pos2.z; j++) {
-                m_instructions[i, 1, j] = null;
+                m_instructions[i, pos1.y / 2, j] = null;
             }
         }
     }

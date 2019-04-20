@@ -22,6 +22,7 @@ public class WheelController : MonoBehaviour
     WheelCollider m_wheel;
 
     public ParticleSystem particle;
+    public TrailRenderer trail;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +33,19 @@ public class WheelController : MonoBehaviour
     }
 
     // Update is called once per frame
+    private void Update() {
+        // float a = Mathf.Lerp(0.5f, 1.0f, SceneController.CONTEXT.TimeCtrl.LightIntensity);
+
+        Color color = Color.Lerp(new Color(0.2f, 0.2f, 0.2f), Color.white, SceneController.CONTEXT.TimeCtrl.LightIntensity);
+
+        color.a = 0.4f;
+        particle.GetComponent<ParticleSystemRenderer>().material.color = color;
+
+        color.a = 0.2f;
+        trail.material.color = color;
+
+    }
+
     void FixedUpdate()
     {
         Vector3 vector = Vector3.Project(this.transform.position - pos, this.transform.forward);

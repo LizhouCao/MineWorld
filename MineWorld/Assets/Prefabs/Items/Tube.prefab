@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 8253200042087265866}
   - component: {fileID: 4892521276156606923}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4784,6 +4784,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7934172470692166021}
+  - component: {fileID: 7349458810045663931}
   m_Layer: 0
   m_Name: Tube
   m_TagString: Untagged
@@ -4807,3 +4808,15 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7349458810045663931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6335521016824638145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d1f559b9290a3d4f86d14ca247785f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

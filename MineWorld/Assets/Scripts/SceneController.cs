@@ -16,13 +16,20 @@ public class SceneController : MonoBehaviour
         get { return m_itemGeneratorCtrl; }
     }
 
+    public TimeController TimeCtrl {
+        get { return m_timeController; }
+    }
+
     private ItemGeneratorController m_itemGeneratorCtrl;
+    private TimeController m_timeController;
+
     private int[] m_timeScale = { 0, 1, 2, 4, 8};
     private int num = 1;
 
     private void Awake() {
         CONTEXT = this;
         m_itemGeneratorCtrl = this.GetComponentInChildren<ItemGeneratorController>();
+        m_timeController = this.GetComponentInChildren<TimeController>();
     }
 
     // Start is called before the first frame update

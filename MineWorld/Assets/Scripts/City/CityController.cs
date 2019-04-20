@@ -12,14 +12,22 @@ public class CityController : MonoBehaviour
 
     private CityData m_cityData;
 
+    private CityLevel[] m_cityLevels;
+
     public Transform LevelPlane(int _num) {
-        return this.transform.Find("Level" + _num);
+        return m_cityLevels[_num].transform;
     }
 
     private void Awake() {
         // m_cityData = new CityData();
         m_cityData = LoadCityData("Save/", "data.xml");
+
+        if (m_cityData == null)
+            m_cityData = new CityData();
+
         m_cityData.Init();
+
+        m_cityLevels = this.GetComponentsInChildren<CityLevel>();
     }
 
     // Start is called before the first frame update
@@ -35,12 +43,12 @@ public class CityController : MonoBehaviour
 
     Item SelfGenerate(CityData.ItemGenerateInstruction _instruction) {
         Item prefab = SceneController.CONTEXT.ItemGeneratorCtrl.GetItemPrefabById(_instruction.id);
-        Item item = prefab.Generate(this.LevelPlane(1), _instruction.position, _instruction.rotation);
+        Item item = prefab.Generate(this.LevelPlane(_instruction.position.y / 2), _instruction.position, _instruction.rotation);
         return item;
     }
 
     public void Generate(Item _item, Vector3Int _position, int _rotation) {
-        Item item = _item.Generate(this.LevelPlane(1), _position, _rotation);
+        Item item = _item.Generate(this.LevelPlane(_position.y / 2), _position, _rotation);
         m_cityData.AddInstruction(item, _position, _rotation);
     }
 
@@ -58,9 +66,18 @@ public class CityController : MonoBehaviour
     }
 
     CityData LoadCityData(string _dir, string _file) {
-        XmlSerializer xml = new XmlSerializer(typeof(CityData));
-        using (StreamReader sr = new StreamReader(_dir + _file)) {
-            return (CityData)xml.Deserialize(sr);
+        try {
+            XmlSerializer xml = new XmlSerializer(typeof(CityData));
+
+            if (xml == null)
+                return null;
+
+            using (StreamReader sr = new StreamReader(_dir + _file)) {
+                return (CityData)xml.Deserialize(sr);
+            }
+        }
+        catch (IOException) {
+            return null;
         }
     }
 
@@ -75,5 +92,13 @@ public class CityController : MonoBehaviour
         get {
             return this.transform.Find("FollowTarget");
         }
+    }
+
+    public void LevelButtonSelected(int _level) {
+        for (int i = 0; i < _level; i++)
+            m_cityLevels[i].Show();
+        m_cityLevels[_level].Select();
+        for (int i = _level + 1; i < m_cityLevels.Length; i++)
+            m_cityLevels[i].Hide();
     }
 }

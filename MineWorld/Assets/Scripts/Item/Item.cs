@@ -30,7 +30,7 @@ public class Item : MonoBehaviour
 
         for (int i = pos1.x; i <= pos2.x; i++) {
             for (int j = pos1.z; j <= pos2.z; j++) {
-                CityData.ItemGenerateInstruction instruction = SceneController.CONTEXT.city.Data.GetInstructionByPosition(new Vector3Int(i, 1, j));
+                CityData.ItemGenerateInstruction instruction = SceneController.CONTEXT.city.Data.GetInstructionByPosition(new Vector3Int(i, pos1.y, j));
 
                 if (instruction != null)
                     return false;
